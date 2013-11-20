@@ -64,57 +64,51 @@ states_dictionary = {
 }
 
 class SMLocationTrends() :
-    def __init__(self) :
-        self.api = api_service.ApiService('pcpuk2dfxdwggu6gfssxqa6t', 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg=')
-        self.ip_list = self.get_ips_of_respondents('45533333')
-        print self.get_us_response_information_by_state(self.ip_list)
+    def __init__(self, survey_id, question_number=0) :
+        self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
+        self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
+        self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
+        self.api = api_service.ApiService(self.sm_api_key, self.sm_access_token)
 
-    def get_ips_of_respondents(self,survey_id):
-        add_list = []
-        responses = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})
-        for data in responses['data']:
-            add_list.append(data['ip_address'])
-        return add_list
+        self.respondent_list = None
+        self.questions = None
+
+        #self.get_respondents(survey_id)
+        #self.add_ip_location_info()
+        #self.get_responses(survey_id)
+        self.get_answer_choices(survey_id, 1, 1)
+
+    def get_respondents(self, survey_id):
+        self.respondent_list = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
+
+    def get_responses(self, survey_id):
+        for i in self.respondent_list:
+            print self.api.get_responses({'survey_id': survey_id, 'respondent_ids': [i['respondent_id']]})
+
+    def get_answer_choices(self, survey_id, page_number, question_number):
+        response = self.api.get_survey_details({'survey_id': survey_id})
+        if response['status'] == 0:
+            print response['data']['pages'][page_number-1]['questions'][question_number-1]['answers']
+        else:
+            print "Error with status code :" + str(response['status'])
+
+    def add_ip_location_info(self):
+        for respondent in self.respondent_list:
+            resp = self.get_location_data(respondent['ip_address'])
+            for key in resp.keys():
+                 respondent[key] = resp[key]
     
     def get_location_data(self, ip):
         base_url = 'http://api.ipinfodb.com/v3/ip-city/'
-        params = {'key':'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586', 'ip':ip, 'format':'json'}
+        params = {'key': self.ipinfodb_key, 'ip':ip, 'format':'json'}
         resp = requests.get(url=base_url, params=params)
         return resp.json()
+       
+smlt = SMLocationTrends('45533333')
+for i in smlt.respondent_list:
+    print i
+    print
 
-    def get_us_response_information_by_state(self, ip_list):
-        states = []
-        for ip in ip_list:
-            resp = self.get_location_data(ip)
-            if resp['countryCode'] == 'US':
-                states.append(resp['regionName'])
-
-        
-        state_count = {}
-        for key in states_dictionary.keys():
-            i = states.count(states_dictionary[key])
-            if i>0:
-                state_count[states_dictionary[key]] = i
-            
-        return state_count
-
-
-    def get_us_response_information_by_county(self, ip_list):
-        pass
-    def get_world_response_information_by_country(self, ip_list):
-        pass
-
-    def get_visual_map(self, states_list):
-        pass
-            
-
-sm_map = SMLocationTrends()
-
-
-#
-# NEED TO ADD IN RESPONSES
-# get responses
-#
 
 '''
 #a = api.get_survey_list()
