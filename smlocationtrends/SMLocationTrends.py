@@ -105,9 +105,9 @@ class SMLocationTrends() :
         return resp.json()
        
 smlt = SMLocationTrends('45533333')
-for i in smlt.respondent_list:
-    print i
-    print
+#for i in smlt.respondent_list:
+#    print i
+#    print
 
 
 '''
