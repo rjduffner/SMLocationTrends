@@ -2,8 +2,7 @@ import pyipinfodb
 import api_service
 import simplemapplot
 import requests
-import time
-
+import ratelimit
 
 class ReadRespondentInformation():
     def __init__(self, survey_id):
@@ -16,23 +15,45 @@ class ReadRespondentInformation():
         self.get_responses(survey_id)
 
     def get_respondents(self, survey_id):
-        self.respondent_list = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
-   
-    def get_responses(self, survey_id):
-        for i in self.respondent_list:
-            try:
-                questions = self.api.get_responses({'survey_id': survey_id, 'respondent_ids': [i['respondent_id']]})['data'][0]
-            except:
-                questions = {}
-            i.update(questions)
+        self.respondent_dictionary = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
+    
+    @ratelimit.RateLimited(2)
+    def get_response(self, survey_id, respondent_id):
+        try:
+            response = self.api.get_responses({'survey_id': survey_id, 'respondent_ids': respondent_id})
 
+            print response['status']
+            print response
+            print
+            resp = {'Error': 'BAD INFO'}
+        except:
+            resp = {'Error': 'BAD INFO'}
+        return resp
+    
+    def get_responses(self, survey_id):
+        respondent_list = []
+        for respondent in self.respondent_dictionary[:9]:
+            respondent_list.append(str(respondent['respondent_id']))
+        print respondent_list
+        questions = self.get_response(survey_id, respondent_list)
+        #respondent.update(questions)
+
+
+        '''
+
+        for respondent in self.respondent_dictionary:
+            questions = self.get_response(survey_id, respondent['respondent_id'])
+            respondent.update(questions)
+        '''
 
 smlt = ReadRespondentInformation('45533333')
-
-for i in smlt.respondent_list:
-    print i
+#smlt = ReadRespondentInformation('46460327')
 
 
+print smlt.respondent_dictionary
+
+#for i in smlt.respondent_dictionary:
+#    print i
 
 
 
