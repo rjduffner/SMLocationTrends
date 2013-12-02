@@ -6,54 +6,65 @@ import ratelimit
 
 class ReadRespondentInformation():
     def __init__(self, survey_id):
+        self.DEBUG = False
+
         self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
         self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
         self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
         self.api = api_service.ApiService(self.sm_api_key, self.sm_access_token)
         
-        self.get_respondents(survey_id)
-        self.get_responses(survey_id)
+        self.get_survey_respondent_information(survey_id)
+        self.get_survey_results(survey_id)
 
-    def get_respondents(self, survey_id):
-        self.respondent_dictionary = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
-    
+    def __diff(self, d1, d2, key):
+        if d1[key] != d2[key]:
+            return d1
+        new_keys = list(set(d2) - set(d1))
+        for new_key in new_keys:
+            d1[new_key] = d2[new_key]
+        return d1
+
+    def __join(self, l1, l2, key):
+        l3 = l1
+        for d2 in l2:
+            l3 = map(lambda d1: self.__diff(d1, d2, key), l3)
+        return l3
+
     @ratelimit.RateLimited(2)
-    def get_response(self, survey_id, respondent_id):
+    def __return_chunk_of_survey_results(self, survey_id, respondent_id):
         try:
             response = self.api.get_responses({'survey_id': survey_id, 'respondent_ids': respondent_id})
-
-            print response['status']
-            print response
-            print
-            resp = {'Error': 'BAD INFO'}
         except:
-            resp = {'Error': 'BAD INFO'}
-        return resp
+            response = {'Error': 'BAD INFO'}
+        return response
+
+    def get_survey_respondent_information(self, survey_id):
+        self.respondent_dictionary = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
     
-    def get_responses(self, survey_id):
-        respondent_list = []
-        for respondent in self.respondent_dictionary[:9]:
-            respondent_list.append(str(respondent['respondent_id']))
-        print respondent_list
-        questions = self.get_response(survey_id, respondent_list)
-        #respondent.update(questions)
+    def get_survey_results(self, survey_id):
+        responses = []
+
+        # Chuck respondent ids into 10
+        #
+        for i in range(0, len(self.respondent_dictionary), 10):
+            respondent_list = []
+            chunk = self.respondent_dictionary[i:i + 10]
+            for respondent in chunk:
+                respondent_list.append(respondent['respondent_id'])
+
+            # For each set of 10, add the answer information
+            #
+            for item in self.__return_chunk_of_survey_results(survey_id, respondent_list)['data']:
+                responses.append(item)
+
+        # Merge dictionaries by respondent id.
+        #
+        self.__join(self.respondent_dictionary, responses, 'respondent_id')
 
 
-        '''
-
-        for respondent in self.respondent_dictionary:
-            questions = self.get_response(survey_id, respondent['respondent_id'])
-            respondent.update(questions)
-        '''
-
+'''
 smlt = ReadRespondentInformation('45533333')
-#smlt = ReadRespondentInformation('46460327')
 
-
-print smlt.respondent_dictionary
-
-#for i in smlt.respondent_dictionary:
-#    print i
-
-
-
+for hello in smlt.respondent_dictionary:
+    print hello
+'''
