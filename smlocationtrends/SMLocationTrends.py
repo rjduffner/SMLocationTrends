@@ -3,65 +3,7 @@ import api_service
 import simplemapplot
 import requests
 
-states_dictionary = {
-        'AK': 'ALASKA',
-        'AL': 'ALABAMA',
-        'AR': 'ARKANSAS',
-        'AS': 'AMERICAN_SAMOA',
-        'AZ': 'ARIZONA',
-        'CA': 'CALIFORNIA',
-        'CO': 'COLORADO',
-        'CT': 'CONNECTICUT',
-        'DC': 'DISTRICT_OF_COLUMBIA',
-        'DE': 'DELAWARE',
-        'FL': 'FLORIDA',
-        'GA': 'GEORGIA',
-        'GU': 'GUAM',
-        'HI': 'HAWAII',
-        'IA': 'IOWA',
-        'ID': 'IDAHO',
-        'IL': 'ILLINOIS',
-        'IN': 'INDIANA',
-        'KS': 'KANSAS',
-        'KY': 'KENTUCKY',
-        'LA': 'LOUISIANA',
-        'MA': 'MASSACHUSETTS',
-        'MD': 'MARYLAND',
-        'ME': 'MAINE',
-        'MI': 'MICHIGAN',
-        'MN': 'MINNESOTA',
-        'MO': 'MISSOURI',
-        'MP': 'NORTHERN_MARIANA_ISLANDS',
-        'MS': 'MISSISSIPPI',
-        'MT': 'MONTANA',
-        'NA': 'NATIONAL',
-        'NC': 'NORTH_CAROLINA',
-        'ND': 'NORTH_DAKOTA',
-        'NE': 'NEBRASKA',
-        'NH': 'NEW_HAMPSHIRE',
-        'NJ': 'NEW_JERSEY',
-        'NM': 'NEW_MEXICO',
-        'NV': 'NEVADA',
-        'NY': 'NEW_YORK',
-        'OH': 'OHIO',
-        'OK': 'OKLAHOMA',
-        'OR': 'OREGON',
-        'PA': 'PENNSYLVANIA',
-        'PR': 'PUERTO_RICO',
-        'RI': 'RHODE_ISLAND',
-        'SC': 'SOUTH_CAROLINA',
-        'SD': 'SOUTH_DAKOTA',
-        'TN': 'TENNESSEE',
-        'TX': 'TEXAS',
-        'UT': 'UTAH',
-        'VA': 'VIRGINIA',
-        'VI': 'VIRGIN_ISLANDS',
-        'VT': 'VERMONT',
-        'WA': 'WASHINGTON',
-        'WI': 'WISCONSIN',
-        'WV': 'WEST_VIRGINIA',
-        'WY': 'WYOMING'
-}
+from SurveyResults import SurveyResults
 
 class SMLocationTrends() :
     def __init__(self, survey_id, question_number=0) :
@@ -73,17 +15,14 @@ class SMLocationTrends() :
         self.respondent_list = None
         self.questions = None
 
-        #self.get_respondents(survey_id)
+
+        self.respondent_info = ReadRespondentInfo(survey_id)
+
         #self.add_ip_location_info()
-        #self.get_responses(survey_id)
         self.get_answer_choices(survey_id, 1, 1)
 
-    def get_respondents(self, survey_id):
-        self.respondent_list = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
-
-    def get_responses(self, survey_id):
-        for i in self.respondent_list:
-            print self.api.get_responses({'survey_id': survey_id, 'respondent_ids': [i['respondent_id']]})
+    def get_survey_results(self, survey_id):
+        return self.respondent_info.self.respondent_dictionary
 
     def get_answer_choices(self, survey_id, page_number, question_number):
         response = self.api.get_survey_details({'survey_id': survey_id})
@@ -103,7 +42,38 @@ class SMLocationTrends() :
         params = {'key': self.ipinfodb_key, 'ip':ip, 'format':'json'}
         resp = requests.get(url=base_url, params=params)
         return resp.json()
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 smlt = SMLocationTrends('45533333')
 #for i in smlt.respondent_list:
 #    print i

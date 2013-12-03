@@ -4,10 +4,9 @@ import simplemapplot
 import requests
 import ratelimit
 
-class ReadRespondentInformation():
+class SurveyResults():
     def __init__(self, survey_id):
         self.DEBUG = False
-
         self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
         self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
         self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
@@ -60,11 +59,3 @@ class ReadRespondentInformation():
         # Merge dictionaries by respondent id.
         #
         self.__join(self.respondent_dictionary, responses, 'respondent_id')
-
-
-'''
-smlt = ReadRespondentInformation('45533333')
-
-for hello in smlt.respondent_dictionary:
-    print hello
-'''
