@@ -22,29 +22,53 @@ class SurveyInformation():
         else:
             print "Error with status code :" + str(response['status'])
 
-
-    def get_survey_questions(self):
-        pass
-
-    def get_survey_pages(self):
-        pass
-
-    def get_survey_questions_by_page(self, survey_id):
+    def get_number_of_pages(self, survey_id):
         response = self.api.get_survey_details({'survey_id': survey_id})
         if response['status'] == 0:
             resp = response['data']['pages']
-            for page in resp:
-                questions = page['questions']
-                for question in questions:
-                    print question
-                    print
-                print
-                print
-                print
+        return len(resp)
+
+    def get_number_of_questions_on_page(self, survey_id, page_number):
+        response = self.api.get_survey_details({'survey_id': survey_id})
+        if response['status'] == 0:
+            resp = len(response['data']['pages'][page_number-1]['questions'])
+        else:
+            resp = None
+        return resp
+
+    def get_survey_question(self, survey_id, page_number, question_number):
+        response = self.api.get_survey_details({'survey_id': survey_id})
+        if response['status'] == 0:
+            print response['data']['pages'][page_number-1]['questions'][question_number-1]
         else:
             print "Error with status code :" + str(response['status'])
 
+    def get_survey_pages(self, survey_id):
+        response = self.api.get_survey_details({'survey_id': survey_id})
+        if response['status'] == 0:
+            resp = response['data']['pages']
+            return resp
+        else:
+            print "Error with status code :" + str(response['status'])
+            return None
 
-#si = SurveyInformation('45533333')
-si = SurveyInformation('46460327')
-si.get_survey_questions_by_page()
+
+si = SurveyInformation()
+
+
+
+#print si.get_number_of_pages('45533333')
+#pages = si.get_number_of_pages('46460327')
+#pages = 2
+#print pages
+#for i in range(pages):
+#    print i+1
+#    print si.get_number_of_questions_on_page('46460327', i+1)
+
+
+#print si.get_survey_question('46460327',2,4)
+
+print si.get_survey_questions_by_page('46460327')
+#print si.get_survey_questions_by_page('45533333')
+#si.get_survey_pages('46460327')
+#print si.get_survey_pages('45533333')
