@@ -132,4 +132,3 @@ make_world_country_map(data=country_value, colors=example_colors)
         #ip_location = 'http://www.geody.com/geoip.php?ip=' + url['ip_address']
         #resp = requests.get(url=ip_location, params=None)
 
-'''
