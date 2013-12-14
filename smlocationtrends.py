@@ -2,8 +2,9 @@
 """
 
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify
+
+from surveyinformation import SurveyInformation 
 
 # create our little application :)
 app = Flask(__name__)
@@ -46,28 +47,35 @@ def close_db(error):
     if hasattr(g, 'sqlite_db'):
         g.sqlite_db.close()
 
-@app.route('/')
-def home_page():
-    db = get_db()
-    cur = db.execute('select text from keys')
-    hello = cur.fetchall()
-    if hello == []:
-        session['logged_in'] = False
+@app.route('/', methods=['GET'])
+def index():
+    pages = 0
+    if 'survey_id' in request.args.keys():
+        survey_id = request.args['survey_id']
+        si = SurveyInformation()
+        pages = si.get_number_of_pages(survey_id)
+        message = 'surveyfound!'
     else:
-        session['logged_in'] = True
-    print hello
-    message = "Hello there"
-    return render_template('index.html', message=message)
+        message = 'Hello'
+    return render_template('index.html', message=message, pages=pages)
+
+@app.route('/survey/pages/<survey_id>/<nonsense>', methods=['GET'])
+def get_survey_pages(survey_id, nonsense):
+    si = SurveyInformation()
+    pages = si.get_number_of_pages(survey_id)
+    print nonsense
+    return jsonify({ 'pages': pages })
+
 
 @app.route('/add_keys', methods=['POST'])
 def add_keys():
     db = get_db()
-    db.execute('insert into keys (text) values (?)',
-                 [request.form['key']])
+    db.execute('insert into keys (text) values (?)', [request.form['key']])
     db.commit()
     #flash('New entry was successfully posted')
     return redirect(url_for('home_page'))
 
+    
 '''
 def add_entry():
     if not session.get('logged_in'):

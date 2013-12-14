@@ -26,6 +26,8 @@ class SurveyInformation():
         response = self.api.get_survey_details({'survey_id': survey_id})
         if response['status'] == 0:
             resp = response['data']['pages']
+        else:
+            resp = []
         return len(resp)
 
     def get_number_of_questions_on_page(self, survey_id, page_number):
@@ -53,7 +55,7 @@ class SurveyInformation():
             return None
 
 
-si = SurveyInformation()
+#si = SurveyInformation()
 
 
 
@@ -68,7 +70,7 @@ si = SurveyInformation()
 
 #print si.get_survey_question('46460327',2,4)
 
-print si.get_survey_questions_by_page('46460327')
+#print si.get_survey_questions_by_page('46460327')
 #print si.get_survey_questions_by_page('45533333')
 #si.get_survey_pages('46460327')
 #print si.get_survey_pages('45533333')
