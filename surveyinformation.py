@@ -18,7 +18,7 @@ class SurveyInformation():
     def get_survey_answer_choices(self, survey_id, page_number, question_number):
         response = self.api.get_survey_details({'survey_id': survey_id})
         if response['status'] == 0:
-            print response['data']['pages'][page_number-1]['questions'][question_number-1]['answers']
+            print response['data']['pages'][page_number]['questions'][question_number]['answers']
         else:
             print "Error with status code :" + str(response['status'])
 
@@ -33,7 +33,7 @@ class SurveyInformation():
     def get_number_of_questions_on_page(self, survey_id, page_number):
         response = self.api.get_survey_details({'survey_id': survey_id})
         if response['status'] == 0:
-            resp = len(response['data']['pages'][page_number-1]['questions'])
+            resp = len(response['data']['pages'][page_number]['questions'])
         else:
             resp = None
         return resp
@@ -41,9 +41,10 @@ class SurveyInformation():
     def get_survey_question(self, survey_id, page_number, question_number):
         response = self.api.get_survey_details({'survey_id': survey_id})
         if response['status'] == 0:
-            print response['data']['pages'][page_number-1]['questions'][question_number-1]
+            resp = response['data']['pages'][page_number]['questions'][question_number]
         else:
-            print "Error with status code :" + str(response['status'])
+            resp = "Error with status code :" + str(response['status'])
+        return resp
 
     def get_survey_pages(self, survey_id):
         response = self.api.get_survey_details({'survey_id': survey_id})

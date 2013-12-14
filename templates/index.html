@@ -10,7 +10,16 @@
         <div> {{ message }} </div>
         <ul>
             {% for page in range(pages) %}
-            <li>{{ page + 1 }}</li>
+            <li>
+            {{ page + 1 }}
+                <ul>
+                    {% for question in range(questions[page]) %}
+                    <li>
+                    <a href="/question/{{survey_id}}/{{page}}/{{question}}">Question {{ question + 1 }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
             {% endfor %}
         </ul>
         {% else %}

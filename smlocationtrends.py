@@ -50,64 +50,27 @@ def close_db(error):
 @app.route('/', methods=['GET'])
 def index():
     pages = 0
+    question_dict = {}
+    survey_id = None
     if 'survey_id' in request.args.keys():
         survey_id = request.args['survey_id']
         si = SurveyInformation()
         pages = si.get_number_of_pages(survey_id)
+        question_dict = {}
+        for page in range(pages):
+            questions =  si.get_number_of_questions_on_page(survey_id, page)
+            question_dict[page] = questions
+        print question_dict
         message = 'surveyfound!'
     else:
         message = 'Hello'
-    return render_template('index.html', message=message, pages=pages)
+    return render_template('index.html', message=message, pages=pages, questions=question_dict, survey_id=survey_id)
 
-@app.route('/survey/pages/<survey_id>/<nonsense>', methods=['GET'])
-def get_survey_pages(survey_id, nonsense):
+@app.route('/question/<survey_id>/<page>/<question>', methods=['GET'])
+def survey_information(survey_id, page, question):
     si = SurveyInformation()
-    pages = si.get_number_of_pages(survey_id)
-    print nonsense
-    return jsonify({ 'pages': pages })
-
-
-@app.route('/add_keys', methods=['POST'])
-def add_keys():
-    db = get_db()
-    db.execute('insert into keys (text) values (?)', [request.form['key']])
-    db.commit()
-    #flash('New entry was successfully posted')
-    return redirect(url_for('home_page'))
-
-    
-'''
-def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
-    db = get_db()
-    db.execute('insert into entries (title, text) values (?, ?)',
-                 [request.form['title'], request.form['text']])
-    db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
-
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('show_entries'))
-'''
+    information = si.get_survey_question(survey_id, int(page), int(question)) 
+    return render_template('survey.html', information=information)
 
 if __name__ == '__main__':
     init_db()
