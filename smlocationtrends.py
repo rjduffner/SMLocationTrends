@@ -69,7 +69,7 @@ def survey(survey_id):
     
     return render_template('survey_information.html', message=message, pages=pages, questions=question_dict, survey_id=survey_id)
 
-@app.route('/question/<survey_id>/<page>/<question>', methods=['GET'])
+@app.route('/trends/<survey_id>/<page>/<question>', methods=['GET'])
 def survey_information(survey_id, page, question):
     si = SurveyInformation()
     information = si.get_survey_question(survey_id, int(page), int(question))
