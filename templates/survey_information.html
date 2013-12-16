@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
     <head>
         <title>Survey Monkey Location Trends</title>
@@ -22,19 +21,6 @@
             </li>
             {% endfor %}
         </ul>
-        {% else %}
-        <div class="bd">
-            <div> {{ message }} </div>
-             <form enctype="application/x-www-form-urlencoded" action="/" method="GET" name='Survey ID Form' id='survey-id-form'>
-                <fieldset form="survey_id">
-                    <div>
-                        <label for="survey-id">Survey ID</label>
-                        <input type="text" autofocus="" title="SM_Survey_ID" size="20" class="textfield" value="" name="survey_id" id="survey_id">
-                    </div>
-                    <input type="submit" value="Submit Keys">
-                 </fieldset> 
-             </form>
-        </div>
         {% endif %}
     </body>
 </html>
