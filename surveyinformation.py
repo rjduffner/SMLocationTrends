@@ -55,7 +55,16 @@ class SurveyInformation():
             print "Error with status code :" + str(response['status'])
             return None
 
-
+    def get_survey_page_count_and_questions(self, survey_id):
+        pages_dict = {}
+        pages = 0
+        response = self.api.get_survey_details({'survey_id': survey_id})
+        if response['status'] == 0:
+            pages = response['data']['pages']
+            for page in range(len(pages)):
+                pages_dict[page] = len(response['data']['pages'][page]['questions'])
+        return len(pages), pages_dict
+                
 #si = SurveyInformation()
 
 

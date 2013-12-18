@@ -55,18 +55,9 @@ def index():
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):
-    pages = 0
-    question_dict = {}
     si = SurveyInformation()
-    pages = si.get_number_of_pages(survey_id)
-    print pages
-    question_dict = {}
-    for page in range(pages):
-        questions =  si.get_number_of_questions_on_page(survey_id, page)
-        question_dict[page] = questions
-    print question_dict
-    message = 'API Throttling causes this to fail.'
-    
+    pages, question_dict = si.get_survey_page_count_and_questions(survey_id)
+    message = 'Hopefully Fixed'
     return render_template('survey_information.html', message=message, pages=pages, questions=question_dict, survey_id=survey_id)
 
 @app.route('/trends/<survey_id>/<page>/<question>', methods=['GET'])
