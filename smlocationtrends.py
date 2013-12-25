@@ -1,10 +1,11 @@
 """
 """
 
-from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify
 
-from surveyinformation import SurveyInformation 
+from surveyinformation import SurveyInformation
+from surveyresults import SurveyResults
+from locationinformation import LocationInformation
 
 # create our little application :)
 app = Flask(__name__)
@@ -15,57 +16,41 @@ app.config.update(dict(
     DEBUG=True,
     SECRET_KEY='development key',
     USERNAME='admin',
-    PASSWORD='default'
+    PASSWORD='default',
+    SM_API_KEY='pcpuk2dfxdwggu6gfssxqa6t',
+    SM_ACCESS_TOKEN='UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-
-def connect_db():
-    """Connects to the specific database."""
-    rv = sqlite3.connect(app.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
-    return rv
-
-def init_db():
-    """Creates the database tables."""
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-def get_db():
-    """Opens a new database connection if there is none yet for the
-    current application context.
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = connect_db()
-    return g.sqlite_db
-
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
 
 @app.route('/', methods=['GET'])
 def index():
     if 'survey_id' in request.args.keys():
         return redirect(url_for('survey', survey_id=request.args['survey_id']))
-    return render_template('index.html', message='hello there')
+    return render_template('index.html')
 
 @app.route('/survey/<survey_id>', methods=['GET'])
 def survey(survey_id):
-    si = SurveyInformation()
+    si = SurveyInformation(app.config['SM_API_KEY'], app.config['SM_ACCESS_TOKEN'])
     pages, question_dict = si.get_survey_page_count_and_questions(survey_id)
-    message = 'Hopefully Fixed'
-    return render_template('survey_information.html', message=message, pages=pages, questions=question_dict, survey_id=survey_id)
+    return render_template('survey.html', pages=pages, questions=question_dict, survey_id=survey_id)
 
 @app.route('/trends/<survey_id>/<page>/<question>', methods=['GET'])
 def survey_information(survey_id, page, question):
-    si = SurveyInformation()
+    si = SurveyInformation(app.config['SM_API_KEY'], app.config['SM_ACCESS_TOKEN'])
     information = si.get_survey_question(survey_id, int(page), int(question))
-    return render_template('survey.html', information=information)
+
+    sr = SurveyResults(app.config['SM_API_KEY'], app.config['SM_ACCESS_TOKEN'], survey_id)
+    respondents = sr.respondent_dictionary
+
+    ip_list = []
+    for i in respondents:
+        ip_list.append(i['ip_address'])
+        
+    li = LocationInformation(ip_list)
+    locations = li.ip_dictionary
+
+
+    return render_template('trends.html', information=information, respondents=respondents, locations=locations)
 
 if __name__ == '__main__':
-    init_db()
     app.run()

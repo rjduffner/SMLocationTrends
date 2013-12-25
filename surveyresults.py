@@ -9,7 +9,7 @@ import requests
 import ratelimit
 
 class SurveyResults():
-    def __init__(self, survey_id):
+    def __init__(self, sm_api_key, sm_access_token, survey_id):
         self.DEBUG = False
         self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
         self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
