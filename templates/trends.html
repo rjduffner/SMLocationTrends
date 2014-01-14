@@ -16,12 +16,16 @@
                 {% endfor %}
             </tbody>
         </table>
-        <br><br><br>
+        <br><br>
+        {% for respondent in respondents %}
         <div>
-            {{ respondents }}
+            {{ respondent }}
+            <br><br>
         </div>
-        <br><br><br>
+        {% endfor %}
+        <br><br>
         <div>
-            {{ locations }}
+            {{ location }}
         </div>
+        {% endfor %}
     </body>
