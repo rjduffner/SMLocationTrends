@@ -1,3 +1,12 @@
+"""
+
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
+
+locationinformation.py
+
+"""
 import requests
 
 class LocationInformation() :

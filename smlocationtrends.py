@@ -1,4 +1,11 @@
 """
+
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
+
+smlocationtrends.py
+
 """
 
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify

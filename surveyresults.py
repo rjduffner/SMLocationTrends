@@ -1,6 +1,12 @@
-'''
+"""
 
-'''
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
+
+surveyresults.py
+
+"""
 
 import pyipinfodb
 import api_service

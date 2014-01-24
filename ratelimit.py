@@ -1,7 +1,8 @@
 '''
-
+Author Greg Burek
+Date: January 14, 2013
+GitHub: https://github.com/gregburek
 '''
-
 import time
 
 def RateLimited(maxPerSecond):

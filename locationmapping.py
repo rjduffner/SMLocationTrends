@@ -1,6 +1,12 @@
-'''
+"""
 
-'''
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
+
+locationmapping.py
+
+"""
 import simplemapplot
 
 class LocationMapping() :
