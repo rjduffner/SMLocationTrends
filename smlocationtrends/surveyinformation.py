@@ -10,7 +10,7 @@ surveyinformation.py
 
 import pyipinfodb
 import api_service
-import simplemapplot
+#import simplemapplot
 import requests
 import ratelimit
 

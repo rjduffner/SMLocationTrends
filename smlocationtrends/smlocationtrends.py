@@ -28,9 +28,8 @@ def index(request):
 @view_config(route_name='survey', renderer='templates/survey.jinja2')
 def survey(request):
     survey_id = request.matchdict['survey_id']
-    print survey_id
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
-    pages, question_dict = si.get_survey_page_count_and_questions(survey_id)
+    pages, questions = si.get_survey_page_count_and_questions(survey_id)
     return {'project': 'smlocationtrends',
             'pages': pages,
             'questions': questions,
@@ -39,14 +38,19 @@ def survey(request):
 
 @view_config(route_name='trends', renderer='templates/trends.jinja2')
 def survey_information(request):
+    
+    survey_id = request.matchdict['survey_id']
+    page = request.matchdict['page']
+    question = request.matchdict['question']
+
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
     information = si.get_survey_question(survey_id, int(page), int(question))
+    
     sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, survey_id)
     respondents = sr.respondent_dictionary
-    ip_list = []
-    for i in respondents:
-        ip_list.append(i['ip_address'])
-    li = LocationInformation(ip_list)
-    locations = li.ip_dictionary
-    return render_template('trends.jinja2', information=information, respondents=respondents, locations=locations)
+
+    return {
+            'information': information, 
+            'respondents': respondents
+            }
 

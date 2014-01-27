@@ -8,11 +8,11 @@ surveyresults.py
 
 """
 
-import pyipinfodb
 import api_service
-import simplemapplot
-import requests
+#import simplemapplot
 import ratelimit
+
+from locationinformation import LocationInformation
 
 class SurveyResults():
     def __init__(self, sm_api_key, sm_access_token, survey_id):
@@ -47,8 +47,11 @@ class SurveyResults():
             response = {'Error': 'BAD INFO'}
         return response
 
-    def get_survey_respondent_information(self, survey_id):
+    def get_survey_respondent_information(self, survey_id, location_information=True):
         self.respondent_dictionary = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
+        
+        if location_information:
+            self.get_location_information()
     
     def get_survey_results(self, survey_id):
         responses = []
@@ -69,3 +72,10 @@ class SurveyResults():
         # Merge dictionaries by respondent id.
         #
         self.__join(self.respondent_dictionary, responses, 'respondent_id')
+
+
+    def get_location_information(self):
+        li = LocationInformation()
+        for response in self.respondent_dictionary:
+            response['location'] = li.get_location_data(response['ip_address'])
+
