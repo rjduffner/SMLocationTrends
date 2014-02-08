@@ -14,9 +14,8 @@ from surveyinformation import SurveyInformation
 from surveyresults import SurveyResults
 from locationinformation import LocationInformation
 
-
-SM_API_KEY='pcpuk2dfxdwggu6gfssxqa6t'
-SM_ACCESS_TOKEN='UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
+import logging
+logger = logging.getLogger(__name__)
 
 @view_config(route_name='home', renderer='templates/index.jinja2')
 def index(request):
@@ -27,6 +26,8 @@ def index(request):
 
 @view_config(route_name='survey', renderer='templates/survey.jinja2')
 def survey(request):
+    SM_API_KEY = request.registry.settings['sm_api_key']
+    SM_ACCESS_TOKEN = request.registry.settings['sm_access_token']
     survey_id = request.matchdict['survey_id']
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
     pages, questions = si.get_survey_page_count_and_questions(survey_id)
@@ -38,7 +39,9 @@ def survey(request):
 
 @view_config(route_name='trends', renderer='templates/trends.jinja2')
 def survey_information(request):
-    
+    SM_API_KEY = request.registry.settings['sm_api_key']
+    SM_ACCESS_TOKEN = request.registry.settings['sm_access_token']
+    IPINFODB_KEY = request.registry.settings['ipinfodb_key']
     survey_id = request.matchdict['survey_id']
     page = request.matchdict['page']
     question = request.matchdict['question']
@@ -46,7 +49,7 @@ def survey_information(request):
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
     information = si.get_survey_question(survey_id, int(page), int(question))
     
-    sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, survey_id)
+    sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, IPINFODB_KEY, survey_id)
     respondents = sr.respondent_dictionary
 
     return {

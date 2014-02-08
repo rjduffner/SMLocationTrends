@@ -15,11 +15,11 @@ import ratelimit
 from locationinformation import LocationInformation
 
 class SurveyResults():
-    def __init__(self, sm_api_key, sm_access_token, survey_id):
+    def __init__(self, sm_api_key, sm_access_token, ipinfodb_key, survey_id):
         self.DEBUG = False
-        self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
-        self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
-        self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
+        self.sm_api_key = sm_api_key
+        self.sm_access_token = sm_access_token
+        self.ipinfodb_key = ipinfodb_key
         self.api = api_service.ApiService(self.sm_api_key, self.sm_access_token)
         
         self.get_survey_respondent_information(survey_id)
@@ -75,7 +75,7 @@ class SurveyResults():
 
 
     def get_location_information(self):
-        li = LocationInformation()
+        li = LocationInformation(self.ipinfodb_key)
         for response in self.respondent_dictionary:
             response['location'] = li.get_location_data(response['ip_address'])
 

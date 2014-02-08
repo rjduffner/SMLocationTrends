@@ -9,9 +9,9 @@ locationinformation.py
 """
 import requests
 
-class LocationInformation() :
-    def __init__(self) :
-        self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
+class LocationInformation(object) :
+    def __init__(self, ipinfodb_key) :
+        self.ipinfodb_key = ipinfodb_key 
         #self.ip_list = ip_list
         self.ip_dictionary = {}
         #self.get_location_information()
