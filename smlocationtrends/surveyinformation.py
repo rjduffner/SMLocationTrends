@@ -1,10 +1,16 @@
-'''
+"""
 
-'''
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
+
+surveyinformation.py
+
+"""
 
 import pyipinfodb
 import api_service
-import simplemapplot
+#import simplemapplot
 import requests
 import ratelimit
 

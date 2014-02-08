@@ -1,19 +1,25 @@
-'''
+"""
 
-'''
+Author: Robert Duffner
+Date: January 14, 2013
+Email: rjduffner@gmail.com
 
-import pyipinfodb
+surveyresults.py
+
+"""
+
 import api_service
-import simplemapplot
-import requests
+#import simplemapplot
 import ratelimit
 
+from locationinformation import LocationInformation
+
 class SurveyResults():
-    def __init__(self, sm_api_key, sm_access_token, survey_id):
+    def __init__(self, sm_api_key, sm_access_token, ipinfodb_key, survey_id):
         self.DEBUG = False
-        self.sm_api_key = 'pcpuk2dfxdwggu6gfssxqa6t'
-        self.sm_access_token = 'UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg='
-        self.ipinfodb_key = 'ccfd7803a6ddd304d590cd37c92826f9ddaaecc180b69888ffaf7a83b4973586'
+        self.sm_api_key = sm_api_key
+        self.sm_access_token = sm_access_token
+        self.ipinfodb_key = ipinfodb_key
         self.api = api_service.ApiService(self.sm_api_key, self.sm_access_token)
         
         self.get_survey_respondent_information(survey_id)
@@ -41,8 +47,11 @@ class SurveyResults():
             response = {'Error': 'BAD INFO'}
         return response
 
-    def get_survey_respondent_information(self, survey_id):
+    def get_survey_respondent_information(self, survey_id, location_information=True):
         self.respondent_dictionary = self.api.get_respondent_list({'survey_id': survey_id, 'fields':['ip_address']})['data']
+        
+        if location_information:
+            self.get_location_information()
     
     def get_survey_results(self, survey_id):
         responses = []
@@ -63,3 +72,10 @@ class SurveyResults():
         # Merge dictionaries by respondent id.
         #
         self.__join(self.respondent_dictionary, responses, 'respondent_id')
+
+
+    def get_location_information(self):
+        li = LocationInformation(self.ipinfodb_key)
+        for response in self.respondent_dictionary:
+            response['location'] = li.get_location_data(response['ip_address'])
+

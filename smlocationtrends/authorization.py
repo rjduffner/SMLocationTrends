@@ -23,11 +23,6 @@ cd ROOT_OF_PACKAGE
 pip install -r requirements.txt
 python ./guides/authorization.py CLIENT_ID CLIENT_SECRET REDIRECT_URL API_KEY
 
-python ./guides/authorization.py rjduffner Z7VxtxJQbM93EfNY2FRUTwzrskM8ce6D http://127.0.0.1 pcpuk2dfxdwggu6gfssxqa6t
-
-token UFHR1aBDl2QjFoOzyDhoj91aM1Q3Atp-HtOvcI8kBk.HIBEdrGLtGKLnbSmHGcE-cNkJnPOaR1t-jiJqrE3iqUwObKHbg3NuTB-u5W6w9bg=
-
-
 '''
 
 SM_API_BASE = "https://api.surveymonkey.net"
@@ -39,10 +34,10 @@ ACCESS_TOKEN_ENDPOINT = "/oauth/token"
 def main():
     parser = argparse.ArgumentParser(description='Demo OAuth 2.0')
 
-    parser.add_argument("client_id", help='Username from Mashery') #rjduffner
-    parser.add_argument("client_secret", help='Secret from Mashery') #Z7VxtxJQbM93EfNY2FRUTwzrskM8ce6D 
-    parser.add_argument("redirect_url", help='redirect url for auth-code') #http://127.0.0.1
-    parser.add_argument("api_key", help='API key for your app') #pcpuk2dfxdwggu6gfssxqa6t
+    parser.add_argument("client_id", help='Username from Mashery') 
+    parser.add_argument("client_secret", help='Secret from Mashery') 
+    parser.add_argument("redirect_url", help='redirect url for auth-code')
+    parser.add_argument("api_key", help='API key for your app')     
     args = parser.parse_args()
 
     # Step 1 Load oauth dialog and take user input
