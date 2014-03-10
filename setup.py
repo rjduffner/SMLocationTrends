@@ -14,6 +14,7 @@ requires = [
     'simplemapplot',
     'requests',
     'waitress',
+    'pygeoip'
     ]
 
 setup(name='smlocationtrends',

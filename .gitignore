@@ -19,6 +19,7 @@ bin/
 obj/
 TestResults/
 env/
+*egg-info/
 
 ############
 # Packages #

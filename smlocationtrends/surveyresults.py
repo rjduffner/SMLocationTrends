@@ -9,10 +9,9 @@ surveyresults.py
 """
 
 import api_service
-#import simplemapplot
 import ratelimit
 
-from locationinformation import LocationInformation
+import locationinformation as locationinformation 
 
 class SurveyResults():
     def __init__(self, sm_api_key, sm_access_token, ipinfodb_key, survey_id):
@@ -75,7 +74,6 @@ class SurveyResults():
 
 
     def get_location_information(self):
-        li = LocationInformation(self.ipinfodb_key)
         for response in self.respondent_dictionary:
-            response['location'] = li.get_location_data(response['ip_address'])
+            response['location'] = locationinformation.get_location_from_file(response['ip_address'])
 

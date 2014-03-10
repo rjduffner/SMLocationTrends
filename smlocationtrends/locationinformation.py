@@ -7,27 +7,20 @@ Email: rjduffner@gmail.com
 locationinformation.py
 
 """
+from pyramid.view import view_config
 import requests
+import pygeoip
+import os
 
-class LocationInformation(object) :
-    def __init__(self, ipinfodb_key) :
-        self.ipinfodb_key = ipinfodb_key 
-        #self.ip_list = ip_list
-        self.ip_dictionary = {}
-        #self.get_location_information()
+here = os.path.dirname(__file__)
 
-    def get_location_data(self, ip):
-        base_url = 'http://api.ipinfodb.com/v3/ip-city/'
-        params = {'key': self.ipinfodb_key, 'ip':ip, 'format':'json'}
-        resp = requests.get(url=base_url, params=params)
-        print resp.json()
-        if resp.status_code == 200:
-            data = resp.json()
-        else:
-            data = None
-        return data
+CITY_DB = os.path.join(here, 'ipdata' ,"GeoLiteCity.dat")
+geo = pygeoip.GeoIP(CITY_DB, pygeoip.MEMORY_CACHE)
 
-    def get_location_information(self):
-        for ip in self.ip_list:
-            self.ip_dictionary[ip] = self.get_location_data(ip)
- 
+def get_location_from_file(ip):
+    return geo.record_by_addr(ip)
+
+@view_config(route_name='location_information', renderer='json')
+def get_location_data_pyinfodb(request):
+    ip = request.matchdict['ip']
+    return {'status': 0, 'data' : get_location_from_file(ip)}

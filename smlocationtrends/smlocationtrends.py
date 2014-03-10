@@ -12,7 +12,9 @@ from pyramid.httpexceptions import HTTPFound
 
 from surveyinformation import SurveyInformation
 from surveyresults import SurveyResults
-from locationinformation import LocationInformation
+import locationinformation as LocationInformation
+
+from collections import Counter
 
 import logging
 logger = logging.getLogger(__name__)
@@ -52,8 +54,23 @@ def survey_information(request):
     sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, IPINFODB_KEY, survey_id)
     respondents = sr.respondent_dictionary
 
+    
+    city = []
+    state = []
+    for respondent in respondents:
+        city.append(respondent['location'].get('cityName', None))
+        state.append(respondent['location'].get('regionName', None))
+
+    city_count = dict(Counter(city))
+    state_count = dict(Counter(state))
+        
+
+
+
     return {
             'information': information, 
-            'respondents': respondents
+            'respondents': respondents,
+            'city_count': city_count,
+            'state_count': state_count
             }
 
