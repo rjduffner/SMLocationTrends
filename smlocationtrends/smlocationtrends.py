@@ -12,7 +12,6 @@ from pyramid.httpexceptions import HTTPFound
 
 from surveyinformation import SurveyInformation
 from surveyresults import SurveyResults
-import locationinformation as LocationInformation
 
 from collections import Counter
 
