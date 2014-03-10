@@ -16,18 +16,26 @@
                 {% endfor %}
             </tbody>
         </table>
-        <br><br>
-        {% for respondent in respondents %}
-        <div>
-            {{ respondent }}
-            <br><br>
-        </div>
-        {% endfor %}
-
-        <div>
-            {{ city_count }}
-        </div>
-        <div>
-            {{ state_count }}
-        </div>
+        {% set keys = respondents[0].keys() %}
+        <table>
+            <thead>
+                <tr>
+                     {% for key in keys %}
+                     <td>
+                         {{ key }}
+                     </td>
+                     {% endfor %}
+                </tr>
+            </thead>
+                <tbody>
+                    {% for respondent in respondents %}
+                    <tr>
+                        {% for key in keys %}
+                        <td>{{ respondent[key] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+        </table>
+        
     </body>
