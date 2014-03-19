@@ -10,7 +10,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('survey','/survey/{survey_id}')
     config.add_route('trends','/trends/{survey_id}/{page}/{question}')
-    
+    config.add_route('auth', '/auth/')
 
     config.add_route('location_information', '/location/{ip}')
     

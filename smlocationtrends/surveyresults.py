@@ -14,11 +14,9 @@ import ratelimit
 import locationinformation as locationinformation 
 
 class SurveyResults():
-    def __init__(self, sm_api_key, sm_access_token, ipinfodb_key, survey_id):
-        self.DEBUG = False
+    def __init__(self, sm_api_key, sm_access_token, survey_id):
         self.sm_api_key = sm_api_key
         self.sm_access_token = sm_access_token
-        self.ipinfodb_key = ipinfodb_key
         self.api = api_service.ApiService(self.sm_api_key, self.sm_access_token)
         
         self.get_survey_respondent_information(survey_id)
@@ -43,7 +41,7 @@ class SurveyResults():
         try:
             response = self.api.get_responses({'survey_id': survey_id, 'respondent_ids': respondent_id})
         except:
-            response = {'Error': 'BAD INFO'}
+            response = {'status': 1, 'data': []}
         return response
 
     def get_survey_respondent_information(self, survey_id, location_information=True):
@@ -65,8 +63,11 @@ class SurveyResults():
 
             # For each set of 10, add the answer information
             #
-            for item in self.__return_chunk_of_survey_results(survey_id, respondent_list)['data']:
-                responses.append(item)
+            chunk_of_results = self.__return_chunk_of_survey_results(survey_id, respondent_list)
+            
+            if chunk_of_results.get('status') == 0:
+                for item in chunk_of_results.get('data', None):
+                    responses.append(item)
 
         # Merge dictionaries by respondent id.
         #

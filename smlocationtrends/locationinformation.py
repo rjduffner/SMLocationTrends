@@ -8,7 +8,6 @@ locationinformation.py
 
 """
 from pyramid.view import view_config
-import requests
 import pygeoip
 import os
 

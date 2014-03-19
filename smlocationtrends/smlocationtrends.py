@@ -18,6 +18,7 @@ from collections import Counter
 import logging
 logger = logging.getLogger(__name__)
 
+
 @view_config(route_name='home', renderer='templates/index.jinja2')
 def index(request):
     params = dict(request.GET)
@@ -30,8 +31,11 @@ def survey(request):
     SM_API_KEY = request.registry.settings['sm_api_key']
     SM_ACCESS_TOKEN = request.registry.settings['sm_access_token']
     survey_id = request.matchdict['survey_id']
+
+
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
     pages, questions = si.get_survey_page_count_and_questions(survey_id)
+
     return {'project': 'smlocationtrends',
             'pages': pages,
             'questions': questions,
@@ -42,34 +46,39 @@ def survey(request):
 def survey_information(request):
     SM_API_KEY = request.registry.settings['sm_api_key']
     SM_ACCESS_TOKEN = request.registry.settings['sm_access_token']
-    IPINFODB_KEY = request.registry.settings['ipinfodb_key']
+
     survey_id = request.matchdict['survey_id']
     page = request.matchdict['page']
     question = request.matchdict['question']
 
+
     si = SurveyInformation(SM_API_KEY, SM_ACCESS_TOKEN)
     information = si.get_survey_question(survey_id, int(page), int(question))
     
-    sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, IPINFODB_KEY, survey_id)
+    sr = SurveyResults(SM_API_KEY, SM_ACCESS_TOKEN, survey_id)
     respondents = sr.respondent_dictionary
-
     
     city = []
     state = []
     for respondent in respondents:
-        city.append(respondent['location'].get('cityName', None))
-        state.append(respondent['location'].get('regionName', None))
+        city.append(respondent['location'].get('city', None))
+        state.append(respondent['location'].get('region_code', None))
 
-    city_count = dict(Counter(city))
-    state_count = dict(Counter(state))
-        
-
-
-
+    cities_count = dict(Counter(city))
+    states_count = dict(Counter(state))
+    
     return {
             'information': information, 
             'respondents': respondents,
-            'city_count': city_count,
-            'state_count': state_count
+            'cities': cities_count,
+            'states': states_count
             }
 
+
+@view_config(route_name='auth', renderer='templates/auth.jinja2')
+def validate_key_and_token(request):
+        
+    
+        return {
+            'information': 'hello' 
+            }
