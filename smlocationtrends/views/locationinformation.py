@@ -13,7 +13,7 @@ import os
 
 here = os.path.dirname(__file__)
 
-CITY_DB = os.path.join(here, 'ipdata' ,"GeoLiteCity.dat")
+CITY_DB = os.path.join(here, '..', 'ipdata' ,"GeoLiteCity.dat")
 geo = pygeoip.GeoIP(CITY_DB, pygeoip.MEMORY_CACHE)
 
 def get_location_from_file(ip):

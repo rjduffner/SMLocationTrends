@@ -74,11 +74,3 @@ def survey_information(request):
             'states': states_count
             }
 
-
-@view_config(route_name='auth', renderer='templates/auth.jinja2')
-def validate_key_and_token(request):
-        
-    
-        return {
-            'information': 'hello' 
-            }

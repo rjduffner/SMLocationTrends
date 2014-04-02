@@ -5,26 +5,20 @@
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <meta charset="utf-8">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+        <script src="/static/js/auth.js"></script>
     </head>
     <body>
-        <script>
-            //screw the prompt, use display none and populate the page after a sucessful check.
-        </script>
-
-
-
-
         <div id="dialog-form" title="Create new user" class="hidden">
             <p class="validateTips">All form fields are required.</p>
             <form>
-            <fieldset>
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all">
-            </fieldset>
+                <fieldset>
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all">
+                </fieldset>
             </form>
         </div>
     
@@ -39,7 +33,7 @@
                 <label for="api-token">API Access Token: </label>
                 <input type="text" name="api-token"><br>
 
-                <input type="button" id='create-user' name="api-button" value="Validate API Information">
+                <input href="#" type="button" id='validate-api-data' name="api-button" value="Validate API Information">
             </form>
 
 
