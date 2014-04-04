@@ -19,10 +19,11 @@ logger = logging.getLogger(__name__)
 @view_config(route_name='auth', renderer='json')
 def auth(request):
     # Key and Token
-    print request.POST.get('api_key')
-    print request.POST.get('access_token')
-    
-    response = Response(content_type = 'application/json')
-    response.set_cookie('lang', 'hello', max_age=31536000)
+    api_key = request.POST.get('api_key')
+    access_token = request.POST.get('access_token')
+
+    response = Response(content_type='application/json')
+    response.set_cookie('api_key', api_key, max_age=31536000)
+    response.set_cookie('access_token', access_token, max_age=31536000)
     response.body = json.dumps({'hello': 'world'})
     return response
